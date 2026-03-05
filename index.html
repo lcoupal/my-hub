@@ -3,552 +3,757 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lynn Coupal — Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<title>LC · Project Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+  /* ── DESIGN TOKENS (matching portfolio) ── */
   :root {
-    --bg: #0d0d0f;
-    --surface: #141417;
-    --border: #2a2a2f;
-    --text: #e8e6e1;
-    --muted: #6b6872;
-    --purple: #a78bfa;
-    --blue: #60a5fa;
-    --orange: #fb923c;
-    --green: #4ade80;
-    --red: #f87171;
+    --color-bg:           #f8fafc;
+    --color-surface:      #ffffff;
+    --color-border:       #e2e8f0;
+    --color-border-hover: #cbd5e1;
+    --color-text-primary: #0f172a;
+    --color-text-secondary:#475569;
+    --color-text-muted:   #94a3b8;
+
+    --color-purple:       #7c3aed;
+    --color-purple-bg:    #f5f3ff;
+    --color-purple-border:#ddd6fe;
+
+    --color-blue:         #2563eb;
+    --color-blue-bg:      #eff6ff;
+    --color-blue-border:  #bfdbfe;
+
+    --color-orange:       #d97706;
+    --color-orange-bg:    #fffbeb;
+    --color-orange-border:#fde68a;
+
+    --color-green:        #16a34a;
+    --color-green-bg:     #f0fdf4;
+    --color-green-border: #bbf7d0;
+
+    --color-red:          #dc2626;
+    --color-red-bg:       #fef2f2;
+    --color-red-border:   #fecaca;
+
+    --color-nav-bg:       #0f172a;
+    --color-nav-text:     #f1f5f9;
+    --color-nav-muted:    #94a3b8;
+    --color-accent:       #22c55e;
+
+    --radius-sm:  6px;
+    --radius-md:  10px;
+    --radius-lg:  16px;
+    --shadow-sm:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --shadow-md:  0 4px 16px rgba(0,0,0,.07), 0 1px 4px rgba(0,0,0,.04);
+    --shadow-lg:  0 10px 40px rgba(0,0,0,.10), 0 2px 8px rgba(0,0,0,.05);
+
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --transition: 0.2s ease;
   }
 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font);
+    background: var(--color-bg);
+    color: var(--color-text-primary);
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NAV (shared) ── */
+  .nav {
+    background: var(--color-nav-bg);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .nav-logo {
+    width: 32px;
+    height: 32px;
+    background: var(--color-accent);
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow-x: hidden;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -.5px;
+    flex-shrink: 0;
   }
 
-  /* Subtle grid background */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(167,139,250,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(167,139,250,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
+  .nav-text { display: flex; flex-direction: column; }
+  .nav-title { font-size: 15px; font-weight: 600; color: var(--color-nav-text); line-height: 1.2; }
+  .nav-subtitle { font-size: 11px; color: var(--color-nav-muted); font-weight: 400; }
 
-  /* ── LOGIN SCREEN ── */
+  /* ══ LOGIN ══ */
   #login-screen {
-    position: relative;
-    z-index: 1;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    animation: fadeUp .45s ease both;
+  }
+
+  .login-wrap {
+    flex: 1;
+    display: flex;
     align-items: center;
-    gap: 32px;
-    animation: fadeIn 0.6s ease;
+    justify-content: center;
+    padding: 40px 16px;
   }
 
   .login-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 48px 40px;
-    width: 380px;
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    box-shadow: 0 0 60px rgba(167,139,250,0.06), 0 20px 60px rgba(0,0,0,0.4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
   }
 
-  .login-header {
-    text-align: center;
+  .login-card-header {
+    padding: 32px 32px 24px;
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .login-header h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 28px;
-    font-weight: 400;
-    letter-spacing: -0.5px;
-    color: var(--text);
+  .badge-row { display: flex; gap: 8px; margin-bottom: 16px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .02em;
+    border: 1px solid;
+  }
+
+  .badge-green {
+    background: var(--color-green-bg);
+    color: var(--color-green);
+    border-color: var(--color-green-border);
+  }
+
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .login-card-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -.4px;
     margin-bottom: 6px;
   }
 
-  .login-header p {
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 0.05em;
+  .login-card-header p {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
   }
 
-  .divider {
-    height: 1px;
-    background: var(--border);
+  .login-card-body {
+    padding: 28px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
   }
+
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
 
   .field-label {
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
   }
 
-  .input-wrap {
-    position: relative;
-  }
+  .input-wrap { position: relative; }
 
   .input-wrap input {
     width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 44px 14px 16px;
-    font-family: 'DM Mono', monospace;
+    height: 42px;
+    padding: 0 42px 0 14px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font);
     font-size: 14px;
-    color: var(--text);
+    color: var(--color-text-primary);
+    background: var(--color-surface);
     outline: none;
-    transition: border-color 0.25s, box-shadow 0.25s;
-    letter-spacing: 0.1em;
+    transition: border-color var(--transition), box-shadow var(--transition);
   }
 
   .input-wrap input:focus {
-    border-color: var(--purple);
-    box-shadow: 0 0 0 3px rgba(167,139,250,0.15);
+    border-color: var(--color-blue);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.12);
   }
 
-  .input-wrap input.error {
-    border-color: var(--red);
-    box-shadow: 0 0 0 3px rgba(248,113,113,0.12);
-    animation: shake 0.4s ease;
+  .input-wrap input.shake {
+    border-color: var(--color-red);
+    box-shadow: 0 0 0 3px rgba(220,38,38,.1);
+    animation: shake .35s ease;
   }
 
   .eye-btn {
     position: absolute;
-    right: 14px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--muted);
-    font-size: 16px;
+    color: var(--color-text-muted);
+    font-size: 15px;
     line-height: 1;
-    transition: color 0.2s;
     padding: 2px;
+    transition: color var(--transition);
   }
-
-  .eye-btn:hover { color: var(--text); }
+  .eye-btn:hover { color: var(--color-text-secondary); }
 
   .error-msg {
     font-size: 12px;
-    color: var(--red);
-    margin-top: 8px;
+    color: var(--color-red);
+    font-weight: 500;
     min-height: 16px;
     opacity: 0;
-    transition: opacity 0.2s;
+    transition: opacity .2s;
   }
-
   .error-msg.show { opacity: 1; }
 
-  .login-btn {
+  .btn-primary {
     width: 100%;
-    background: var(--purple);
-    color: #0d0d0f;
+    height: 42px;
+    background: var(--color-nav-bg);
+    color: #fff;
     border: none;
-    border-radius: 10px;
-    padding: 14px;
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    border-radius: var(--radius-md);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-    text-transform: uppercase;
+    transition: background var(--transition), transform .1s;
+    letter-spacing: .01em;
+  }
+  .btn-primary:hover { background: #1e293b; }
+  .btn-primary:active { transform: scale(.99); }
+
+  .login-footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--color-text-muted);
   }
 
-  .login-btn:hover {
-    background: #c4b5fd;
-    box-shadow: 0 0 20px rgba(167,139,250,0.3);
-  }
-
-  .login-btn:active { transform: scale(0.98); }
-
-  /* ── PORTAL SCREEN ── */
+  /* ══ PORTAL ══ */
   #portal-screen {
     display: none;
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 820px;
-    padding: 60px 24px 80px;
-    animation: fadeIn 0.5s ease;
+    min-height: 100vh;
+    flex-direction: column;
+    animation: fadeUp .35s ease both;
   }
 
-  .portal-header {
-    margin-bottom: 56px;
-  }
-
-  .portal-header .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-
-  .portal-header h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(36px, 6vw, 56px);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -1px;
-  }
-
-  .portal-header h1 em {
-    font-style: italic;
-    color: var(--purple);
-  }
-
-  .logout-btn {
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-  }
-
-  .logout-btn:hover { color: var(--text); border-color: var(--text); }
-
-  /* Category sections */
-  .section {
-    margin-bottom: 48px;
-  }
-
-  .section-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .section-title .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .dot-purple { background: var(--purple); box-shadow: 0 0 8px var(--purple); }
-  .dot-blue   { background: var(--blue);   box-shadow: 0 0 8px var(--blue); }
-  .dot-orange { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
-  .dot-green  { background: var(--green);  box-shadow: 0 0 8px var(--green); }
-  .dot-red    { background: var(--red);    box-shadow: 0 0 8px var(--red); }
-
-  .links-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 10px;
-  }
-
-  .link-card {
+  .portal-nav-right {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 14px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    text-decoration: none;
-    color: var(--text);
+  }
+
+  .project-count-pill {
+    font-size: 12px;
+    color: var(--color-nav-muted);
+    background: rgba(255,255,255,.06);
+    padding: 4px 10px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,.1);
+  }
+
+  .btn-signout {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.15);
+    color: var(--color-nav-muted);
+    font-family: var(--font);
     font-size: 13px;
-    transition: border-color 0.2s, background 0.2s, transform 0.15s;
-    position: relative;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: color var(--transition), border-color var(--transition);
+  }
+  .btn-signout:hover { color: var(--color-nav-text); border-color: rgba(255,255,255,.3); }
+
+  .portal-main {
+    flex: 1;
+    max-width: 880px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .portal-page-header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .portal-page-header h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -.4px;
+    margin-bottom: 6px;
+  }
+
+  .portal-page-header p {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+
+  /* ── Collapsible Sections ── */
+  .section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
     overflow: hidden;
+    transition: box-shadow var(--transition);
   }
 
-  .link-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.2s;
+  .section.open { box-shadow: var(--shadow-md); }
+
+  .section-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background var(--transition);
   }
 
-  .link-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--accent, var(--purple));
-  }
+  .section-toggle:hover { background: var(--color-bg); }
 
-  .link-card:hover::before { opacity: 1; }
-
-  .link-card[data-cat="purple"] { --accent: var(--purple); }
-  .link-card[data-cat="purple"]::before { background: linear-gradient(135deg, rgba(167,139,250,0.06), transparent); }
-  .link-card[data-cat="blue"]   { --accent: var(--blue); }
-  .link-card[data-cat="blue"]::before   { background: linear-gradient(135deg, rgba(96,165,250,0.06), transparent); }
-  .link-card[data-cat="orange"] { --accent: var(--orange); }
-  .link-card[data-cat="orange"]::before { background: linear-gradient(135deg, rgba(251,146,60,0.06), transparent); }
-  .link-card[data-cat="green"]  { --accent: var(--green); }
-  .link-card[data-cat="green"]::before  { background: linear-gradient(135deg, rgba(74,222,128,0.06), transparent); }
-  .link-card[data-cat="red"]    { --accent: var(--red); }
-  .link-card[data-cat="red"]::before    { background: linear-gradient(135deg, rgba(248,113,113,0.06), transparent); }
-
-  .link-icon {
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 16px;
+    flex-shrink: 0;
+    border: 1px solid;
+  }
+
+  .icon-purple { background: var(--color-purple-bg); border-color: var(--color-purple-border); }
+  .icon-blue   { background: var(--color-blue-bg);   border-color: var(--color-blue-border); }
+  .icon-orange { background: var(--color-orange-bg); border-color: var(--color-orange-border); }
+  .icon-green  { background: var(--color-green-bg);  border-color: var(--color-green-border); }
+  .icon-red    { background: var(--color-red-bg);    border-color: var(--color-red-border); }
+
+  .section-label-wrap { flex: 1; text-align: left; }
+
+  .section-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    display: block;
+  }
+
+  .section-sub {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+
+  .section-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid;
     flex-shrink: 0;
   }
 
+  .sbadge-purple { background: var(--color-purple-bg); color: var(--color-purple); border-color: var(--color-purple-border); }
+  .sbadge-blue   { background: var(--color-blue-bg);   color: var(--color-blue);   border-color: var(--color-blue-border); }
+  .sbadge-orange { background: var(--color-orange-bg); color: var(--color-orange); border-color: var(--color-orange-border); }
+  .sbadge-green  { background: var(--color-green-bg);  color: var(--color-green);  border-color: var(--color-green-border); }
+  .sbadge-red    { background: var(--color-red-bg);    color: var(--color-red);    border-color: var(--color-red-border); }
+
+  .chevron {
+    color: var(--color-text-muted);
+    font-size: 11px;
+    transition: transform .25s ease;
+    flex-shrink: 0;
+  }
+  .section.open .chevron { transform: rotate(180deg); }
+
+  .section-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease;
+  }
+  .section.open .section-body { max-height: 1400px; }
+
+  .section-divider { height: 1px; background: var(--color-border); margin: 0 20px; }
+
+  .links-grid {
+    padding: 16px 20px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+  }
+
+  /* Project link card */
+  .link-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: border-color var(--transition), box-shadow var(--transition), background var(--transition), transform .15s;
+  }
+
+  .link-card:hover {
+    border-color: var(--c-accent);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+  }
+
+  .link-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--c-accent);
+    opacity: .5;
+    transition: opacity var(--transition);
+  }
+  .link-card:hover .link-dot { opacity: 1; }
+
   .link-name {
     flex: 1;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text-secondary);
+    transition: color var(--transition);
   }
+  .link-card:hover .link-name { color: var(--color-text-primary); }
 
   .link-arrow {
-    color: var(--muted);
-    font-size: 12px;
-    transition: transform 0.2s, color 0.2s;
+    font-size: 11px;
+    color: var(--c-accent);
+    opacity: 0;
+    transition: opacity var(--transition), transform var(--transition);
   }
+  .link-card:hover .link-arrow { opacity: 1; transform: translate(1px,-1px); }
 
-  .link-card:hover .link-arrow {
-    transform: translate(2px, -2px);
-    color: var(--accent, var(--purple));
+  /* Footer */
+  .portal-footer {
+    border-top: 1px solid var(--color-border);
+    padding: 0 32px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--color-surface);
   }
+  .portal-footer span { font-size: 12px; color: var(--color-text-muted); }
+  .footer-right { display: flex; align-items: center; gap: 12px; }
 
-  /* Animations */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(16px); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20%       { transform: translateX(-6px); }
-    40%       { transform: translateX(6px); }
-    60%       { transform: translateX(-4px); }
-    80%       { transform: translateX(4px); }
+    0%,100% { transform: translateX(0); }
+    25%      { transform: translateX(-5px); }
+    75%      { transform: translateX(5px); }
+  }
+
+  @media (max-width: 600px) {
+    .nav { padding: 0 16px; }
+    .login-card-header, .login-card-body { padding-left: 20px; padding-right: 20px; }
+    .portal-main { padding: 24px 16px 60px; }
+    .links-grid { grid-template-columns: 1fr; }
+    .project-count-pill { display: none; }
+    .portal-footer { padding: 0 16px; }
+    .footer-right .badge { display: none; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── LOGIN ── -->
+<!-- ══ LOGIN ══ -->
 <div id="login-screen">
-  <div class="login-card">
-    <div class="login-header">
-      <h1>Lynn Coupal</h1>
-      <p>Enter password to access portal</p>
-    </div>
-    <div class="divider"></div>
-    <div>
-      <div class="field-label">Password</div>
-      <div class="input-wrap">
-        <input type="password" id="pwd-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
-        <button class="eye-btn" onclick="toggleEye()" title="Toggle visibility">👁</button>
+  <nav class="nav">
+    <a class="nav-brand" href="#">
+      <div class="nav-logo">LC</div>
+      <div class="nav-text">
+        <span class="nav-title">Lynn Coupal</span>
+        <span class="nav-subtitle">Design Systems for Education</span>
       </div>
-      <div class="error-msg" id="err-msg">Incorrect password. Try again.</div>
+    </a>
+  </nav>
+
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-card-header">
+        <div class="badge-row">
+          <span class="badge badge-green">
+            <span class="badge-dot"></span>
+            Restricted Access
+          </span>
+        </div>
+        <h1>Project Portal</h1>
+        <p>Enter your passphrase to access the full project directory.</p>
+      </div>
+      <div class="login-card-body">
+        <div class="field-group">
+          <label class="field-label" for="pwd-input">Passphrase</label>
+          <div class="input-wrap">
+            <input type="password" id="pwd-input" placeholder="Enter passphrase"
+              onkeydown="if(event.key==='Enter') doLogin()" autocomplete="current-password">
+            <button class="eye-btn" onclick="toggleEye()" aria-label="Show or hide passphrase">👁</button>
+          </div>
+          <div class="error-msg" id="err-msg">Incorrect passphrase. Please try again.</div>
+        </div>
+        <button class="btn-primary" onclick="doLogin()">Access Portal</button>
+        <p class="login-footer-note">LC · Project Portal · Private Access</p>
+      </div>
     </div>
-    <button class="login-btn" onclick="doLogin()">Enter Portal</button>
   </div>
 </div>
 
-<!-- ── PORTAL ── -->
+<!-- ══ PORTAL ══ -->
 <div id="portal-screen">
-  <button class="logout-btn" onclick="doLogout()">← Logout</button>
+  <nav class="nav">
+    <a class="nav-brand" href="#">
+      <div class="nav-logo">LC</div>
+      <div class="nav-text">
+        <span class="nav-title">Lynn Coupal</span>
+        <span class="nav-subtitle">Design Systems for Education</span>
+      </div>
+    </a>
+    <div class="portal-nav-right">
+      <span class="project-count-pill">19 Projects</span>
+      <button class="btn-signout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </nav>
 
-  <div class="portal-header">
-    <div class="eyebrow">Welcome back</div>
-    <h1>Hi, I'm <em>Lynn Coupal</em> 👋</h1>
-  </div>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <h2>Project Directory</h2>
+      <p>All GitHub Pages projects, organized by category. Click any section to expand.</p>
+    </div>
 
-  <!-- 🟣 Personal -->
-  <div class="section">
-    <div class="section-title">
-      <span class="dot dot-purple"></span> Personal
+    <!-- 🟣 Personal -->
+    <div class="section" id="sec-personal">
+      <button class="section-toggle" onclick="toggle('sec-personal')" aria-expanded="false">
+        <div class="section-icon icon-purple">🟣</div>
+        <div class="section-label-wrap">
+          <span class="section-label">Personal</span>
+          <span class="section-sub">2 projects</span>
+        </div>
+        <span class="section-badge sbadge-purple">Personal</span>
+        <span class="chevron">▼</span>
+      </button>
+      <div class="section-body">
+        <div class="section-divider"></div>
+        <div class="links-grid">
+          <a class="link-card" style="--c-accent:var(--color-purple)" href="https://lcoupal.github.io/25-years-of-grace/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">25-years-of-grace</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-purple)" href="https://lcoupal.github.io/Kennedy-Bedard/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">Kennedy-Bedard</span><span class="link-arrow">↗</span>
+          </a>
+        </div>
+      </div>
     </div>
-    <div class="links-grid">
-      <a class="link-card" data-cat="purple" href="https://lcoupal.github.io/25-years-of-grace/" target="_blank">
-        <span class="link-icon">🟣</span>
-        <span class="link-name">25-years-of-grace</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="purple" href="https://lcoupal.github.io/Kennedy-Bedard/" target="_blank">
-        <span class="link-icon">🟣</span>
-        <span class="link-name">Kennedy-Bedard</span>
-        <span class="link-arrow">↗</span>
-      </a>
-    </div>
-  </div>
 
-  <!-- 🔵 Website Creations -->
-  <div class="section">
-    <div class="section-title">
-      <span class="dot dot-blue"></span> Website Creations
+    <!-- 🔵 Website Creations -->
+    <div class="section" id="sec-web">
+      <button class="section-toggle" onclick="toggle('sec-web')" aria-expanded="false">
+        <div class="section-icon icon-blue">🔵</div>
+        <div class="section-label-wrap">
+          <span class="section-label">Website Creations</span>
+          <span class="section-sub">2 projects</span>
+        </div>
+        <span class="section-badge sbadge-blue">Web</span>
+        <span class="chevron">▼</span>
+      </button>
+      <div class="section-body">
+        <div class="section-divider"></div>
+        <div class="links-grid">
+          <a class="link-card" style="--c-accent:var(--color-blue)" href="https://lcoupal.github.io/Hair-Creation-AG/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">Hair-Creation-AG</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-blue)" href="https://lcoupal.github.io/ItemOrchardLLC/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">ItemOrchardLLC</span><span class="link-arrow">↗</span>
+          </a>
+        </div>
+      </div>
     </div>
-    <div class="links-grid">
-      <a class="link-card" data-cat="blue" href="https://lcoupal.github.io/Hair-Creation-AG/" target="_blank">
-        <span class="link-icon">🔵</span>
-        <span class="link-name">Hair-Creation-AG</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="blue" href="https://lcoupal.github.io/ItemOrchardLLC/" target="_blank">
-        <span class="link-icon">🔵</span>
-        <span class="link-name">ItemOrchardLLC</span>
-        <span class="link-arrow">↗</span>
-      </a>
-    </div>
-  </div>
 
-  <!-- 🟠 Work Personal -->
-  <div class="section">
-    <div class="section-title">
-      <span class="dot dot-orange"></span> Work Personal
+    <!-- 🟠 Work Personal -->
+    <div class="section" id="sec-work">
+      <button class="section-toggle" onclick="toggle('sec-work')" aria-expanded="false">
+        <div class="section-icon icon-orange">🟠</div>
+        <div class="section-label-wrap">
+          <span class="section-label">Work Personal</span>
+          <span class="section-sub">3 projects</span>
+        </div>
+        <span class="section-badge sbadge-orange">Work</span>
+        <span class="chevron">▼</span>
+      </button>
+      <div class="section-body">
+        <div class="section-divider"></div>
+        <div class="links-grid">
+          <a class="link-card" style="--c-accent:var(--color-orange)" href="https://lcoupal.github.io/Resume/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">Resume</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-orange)" href="https://lcoupal.github.io/portfolio/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">portfolio</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-orange)" href="https://lcoupal.github.io/item-orchard-llc-application-brochures/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">item-orchard-llc-application-brochures</span><span class="link-arrow">↗</span>
+          </a>
+        </div>
+      </div>
     </div>
-    <div class="links-grid">
-      <a class="link-card" data-cat="orange" href="https://lcoupal.github.io/Resume/" target="_blank">
-        <span class="link-icon">🟠</span>
-        <span class="link-name">Resume</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="orange" href="https://lcoupal.github.io/portfolio/" target="_blank">
-        <span class="link-icon">🟠</span>
-        <span class="link-name">portfolio</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="orange" href="https://lcoupal.github.io/item-orchard-llc-application-brochures/" target="_blank">
-        <span class="link-icon">🟠</span>
-        <span class="link-name">item-orchard-llc-application-brochures</span>
-        <span class="link-arrow">↗</span>
-      </a>
-    </div>
-  </div>
 
-  <!-- 🟢 WGU Work -->
-  <div class="section">
-    <div class="section-title">
-      <span class="dot dot-green"></span> WGU Work
+    <!-- 🟢 WGU Work -->
+    <div class="section" id="sec-wgu">
+      <button class="section-toggle" onclick="toggle('sec-wgu')" aria-expanded="false">
+        <div class="section-icon icon-green">🟢</div>
+        <div class="section-label-wrap">
+          <span class="section-label">WGU Work</span>
+          <span class="section-sub">7 projects</span>
+        </div>
+        <span class="section-badge sbadge-green">WGU</span>
+        <span class="chevron">▼</span>
+      </button>
+      <div class="section-body">
+        <div class="section-divider"></div>
+        <div class="links-grid">
+          <a class="link-card" style="--c-accent:var(--color-green)" href="https://lcoupal.github.io/Case_Study_Rankings/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">Case_Study_Rankings</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-green)" href="https://lcoupal.github.io/Exploring-Systems-Like-a-Scientist-Course-Planner/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">Exploring-Systems Course-Planner</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-green)" href="https://lcoupal.github.io/geti-knowledge-graph/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">geti-knowledge-graph</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-green)" href="https://lcoupal.github.io/Claim_Evaluation_Quick_Guide/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">Claim_Evaluation_Quick_Guide</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-green)" href="https://lcoupal.github.io/Systems_Thinking_Skillshop_3_Exemplar/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">Systems_Thinking_Skillshop_3_Exemplar</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-green)" href="https://lcoupal.github.io/Systems_Analysis_Brief/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">Systems_Analysis_Brief</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-green)" href="https://lcoupal.github.io/Exploring_Systems_Like_a_Scientist-PA-Review/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">Exploring_Systems PA-Review</span><span class="link-arrow">↗</span>
+          </a>
+        </div>
+      </div>
     </div>
-    <div class="links-grid">
-      <a class="link-card" data-cat="green" href="https://lcoupal.github.io/Case_Study_Rankings/" target="_blank">
-        <span class="link-icon">🟢</span>
-        <span class="link-name">Case_Study_Rankings</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="green" href="https://lcoupal.github.io/Exploring-Systems-Like-a-Scientist-Course-Planner/" target="_blank">
-        <span class="link-icon">🟢</span>
-        <span class="link-name">Exploring-Systems Course Planner</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="green" href="https://lcoupal.github.io/geti-knowledge-graph/" target="_blank">
-        <span class="link-icon">🟢</span>
-        <span class="link-name">geti-knowledge-graph</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="green" href="https://lcoupal.github.io/Claim_Evaluation_Quick_Guide/" target="_blank">
-        <span class="link-icon">🟢</span>
-        <span class="link-name">Claim_Evaluation_Quick_Guide</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="green" href="https://lcoupal.github.io/Systems_Thinking_Skillshop_3_Exemplar/" target="_blank">
-        <span class="link-icon">🟢</span>
-        <span class="link-name">Systems_Thinking_Skillshop_3</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="green" href="https://lcoupal.github.io/Systems_Analysis_Brief/" target="_blank">
-        <span class="link-icon">🟢</span>
-        <span class="link-name">Systems_Analysis_Brief</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="green" href="https://lcoupal.github.io/Exploring_Systems_Like_a_Scientist-PA-Review/" target="_blank">
-        <span class="link-icon">🟢</span>
-        <span class="link-name">Exploring_Systems PA-Review</span>
-        <span class="link-arrow">↗</span>
-      </a>
-    </div>
-  </div>
 
-  <!-- 🔴 Programs -->
-  <div class="section">
-    <div class="section-title">
-      <span class="dot dot-red"></span> Programs
+    <!-- 🔴 Programs -->
+    <div class="section" id="sec-programs">
+      <button class="section-toggle" onclick="toggle('sec-programs')" aria-expanded="false">
+        <div class="section-icon icon-red">🔴</div>
+        <div class="section-label-wrap">
+          <span class="section-label">Programs</span>
+          <span class="section-sub">5 projects</span>
+        </div>
+        <span class="section-badge sbadge-red">Programs</span>
+        <span class="chevron">▼</span>
+      </button>
+      <div class="section-body">
+        <div class="section-divider"></div>
+        <div class="links-grid">
+          <a class="link-card" style="--c-accent:var(--color-red)" href="https://lcoupal.github.io/math-editor-reviewer/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">math-editor-reviewer</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-red)" href="https://lcoupal.github.io/math_question_editor/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">math_question_editor</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-red)" href="https://lcoupal.github.io/json_to_qti_2.1_converter/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">json_to_qti_2.1_converter</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-red)" href="https://lcoupal.github.io/orchard-view/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">orchard-view</span><span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" style="--c-accent:var(--color-red)" href="https://lcoupal.github.io/Item-Bank/" target="_blank" rel="noopener">
+            <span class="link-dot"></span><span class="link-name">Item-Bank</span><span class="link-arrow">↗</span>
+          </a>
+        </div>
+      </div>
     </div>
-    <div class="links-grid">
-      <a class="link-card" data-cat="red" href="https://lcoupal.github.io/math-editor-reviewer/" target="_blank">
-        <span class="link-icon">🔴</span>
-        <span class="link-name">math-editor-reviewer</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="red" href="https://lcoupal.github.io/math_question_editor/" target="_blank">
-        <span class="link-icon">🔴</span>
-        <span class="link-name">math_question_editor</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="red" href="https://lcoupal.github.io/json_to_qti_2.1_converter/" target="_blank">
-        <span class="link-icon">🔴</span>
-        <span class="link-name">json_to_qti_2.1_converter</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="red" href="https://lcoupal.github.io/orchard-view/" target="_blank">
-        <span class="link-icon">🔴</span>
-        <span class="link-name">orchard-view</span>
-        <span class="link-arrow">↗</span>
-      </a>
-      <a class="link-card" data-cat="red" href="https://lcoupal.github.io/Item-Bank/" target="_blank">
-        <span class="link-icon">🔴</span>
-        <span class="link-name">Item-Bank</span>
-        <span class="link-arrow">↗</span>
-      </a>
+  </main>
+
+  <footer class="portal-footer">
+    <span>LC · Project Portal</span>
+    <div class="footer-right">
+      <span class="badge badge-green" style="font-size:10px;padding:2px 8px;">WCAG 2.2 AA</span>
+      <span>Design Systems for Education</span>
     </div>
-  </div>
+  </footer>
 </div>
 
 <script>
-  // ── Set your password here ──
-  const PASSWORD = "lynn2025";
+  const PASSWORD = "Lynn2025";
 
   function doLogin() {
-    const val = document.getElementById('pwd-input').value;
-    const err = document.getElementById('err-msg');
     const input = document.getElementById('pwd-input');
-
-    if (val === PASSWORD) {
+    const err   = document.getElementById('err-msg');
+    if (input.value === PASSWORD) {
       document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('portal-screen').style.display = 'block';
-      sessionStorage.setItem('portal_auth', '1');
+      const portal = document.getElementById('portal-screen');
+      portal.style.display = 'flex';
+      sessionStorage.setItem('lc_auth', '1');
     } else {
-      input.classList.remove('error');
-      void input.offsetWidth; // reflow for re-trigger
-      input.classList.add('error');
+      input.classList.remove('shake');
+      void input.offsetWidth;
+      input.classList.add('shake');
       err.classList.add('show');
       input.value = '';
-      setTimeout(() => input.classList.remove('error'), 500);
+      input.focus();
+      setTimeout(() => input.classList.remove('shake'), 400);
     }
   }
 
   function doLogout() {
-    sessionStorage.removeItem('portal_auth');
+    sessionStorage.removeItem('lc_auth');
     document.getElementById('portal-screen').style.display = 'none';
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('pwd-input').value = '';
@@ -556,14 +761,19 @@
   }
 
   function toggleEye() {
-    const input = document.getElementById('pwd-input');
-    input.type = input.type === 'password' ? 'text' : 'password';
+    const i = document.getElementById('pwd-input');
+    i.type = i.type === 'password' ? 'text' : 'password';
   }
 
-  // Auto-login if session is still active
-  if (sessionStorage.getItem('portal_auth') === '1') {
+  function toggle(id) {
+    const sec = document.getElementById(id);
+    const open = sec.classList.toggle('open');
+    sec.querySelector('.section-toggle').setAttribute('aria-expanded', open);
+  }
+
+  if (sessionStorage.getItem('lc_auth') === '1') {
     document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('portal-screen').style.display = 'block';
+    document.getElementById('portal-screen').style.display = 'flex';
   }
 </script>
 </body>
